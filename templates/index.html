@@ -8,10 +8,10 @@
 </style>
 </head> 
 <body>
-<form action="/validate_user" method="post">
+<form action="/" method="post">
     <h1>SignUp</h1>
     <p><label>Username  <input type="text" name="username" value="{{request.form['username'] }}"/></label>
-        <span class="error">{{user_error}}</span></p>
+        <span class="error">{{username_error}}</span></p>
     <p><label>Password  <input type="password" name="password" /></label>
         <span class="error">{{password_error}}</span></p>
     <p><label>Verify Password  <input type="password" name="vpassword" /></label>

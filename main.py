@@ -5,7 +5,7 @@ import re
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-@app.route("/validate_user", methods=['POST'])
+@app.route("/", methods=['POST'])
 def validate_user():
 
     username = request.form['username']
@@ -13,60 +13,38 @@ def validate_user():
     vpassword = request.form['vpassword']
     email = request.form['email']
 
-    user_error = ''
+    username_error = ''
     password_error = ''
     vpassword_error = ''
     email_error = ''
-
-    f_username = len(username)-username.count(' ')
-
-    errors = [] 
+    
     if request.method == 'post':     
         return render_template('welcome.html', errors=errors)
+        
 
-    if username == '' :
-       user_error = "That's not a valid username"      
-       return render_template('index.html',user_error=user_error)
+    if username == "" or " " in username or len(username) < 3 or len(username) > 20:  
+       username_error = "That's not a valid username"      
 
-    if len(username) < 3:
-       user_error = "That's not a valid username"     
-       return render_template('index.html',user_error=user_error)  
-
-    if len(username) > 20:
-       user_error = "That's not a valid username"      
-       return render_template('index.html',user_error=user_error) 
-    
-    if f_username < 3:
-       user_error = "That's not a valid username"      
-       return render_template('index.html',user_error=user_error)
-
-    if password == '':
+    if password == "" or " " in password or len(password) < 3 or len(password) > 20:
        password_error = "That' s not a valid password"
-       return render_template('index.html',password_error=password_error)
 
-    if len(password) < 3:
-        password_error = "That' s not a valid password"
-        return render_template('index.html',password_error = password_error )
-
-    if len(password) > 20:
-        password_error = "That 's not a valid password"
-        return render_template('index.html',password_error = password_error )
-
-    if password != vpassword:
+    if vpassword != password:
        vpassword_error = "Passwords don't match"
-       return render_template('index.html',vpassword_error = vpassword_error )
 
-    if email =='':
-        return render_template('welcome.html',title='welcome',username=username)
+    if email != "":    
 
-    if (len(email)<3) and (len(email)<20) and re.match('(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',email):
-        email_error = "That 's not a valid email"
-        return render_template('index.html',email_error = email_error )
+        if "@" not in email or "." not in email or " " in email or len(email) < 3 or len(email) > 20:
+                email_error = "That 's not a valid email"  
 
-    if (len(email)>3) and (len(email)<20) and re.match('(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',email):
-        return render_template('welcome.html',title='welcome',username=username)        
+    if email_error == "" and username_error == "" and vpassword_error == "" and password_error == "":
+            return render_template("welcome.html", username = username) 
     else:
-         return render_template('index.html')    
+        return render_template("index.html", username_error = username_error, 
+                                            password_error = password_error, 
+                                            vpassword_error = vpassword_error, 
+                                            email_error = email_error, 
+                                            username = username, 
+                                            email = email) 
 
 @app.route('/')
 def index():
